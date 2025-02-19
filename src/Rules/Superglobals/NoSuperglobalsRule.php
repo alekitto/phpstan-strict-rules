@@ -5,10 +5,9 @@ namespace TheCodingMachine\PHPStan\Rules\Superglobals;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Rules\Rule;
-use PHPStan\ShouldNotHappenException;
+use PHPStan\Rules\RuleError;
+use PHPStan\Rules\RuleErrorBuilder;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
 
 /**
@@ -26,7 +25,7 @@ class NoSuperglobalsRule implements Rule
     /**
      * @param Node\Expr\Variable $node
      * @param \PHPStan\Analyser\Scope $scope
-     * @return string[]
+     * @return RuleError[]
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -42,7 +41,13 @@ class NoSuperglobalsRule implements Rule
         ];
 
         if (\in_array($node->name, $forbiddenGlobals, true)) {
-            return [PrefixGenerator::generatePrefix($scope).'you should not use the $'.$node->name.' superglobal. You should instead rely on your framework that provides you with a "request" object (for instance a PSR-7 RequestInterface or a Symfony Request). More info: http://bit.ly/nosuperglobals'];
+            $message = PrefixGenerator::generatePrefix($scope).'you should not use the $'.$node->name.' superglobal. You should instead rely on your framework that provides you with a "request" object (for instance a PSR-7 RequestInterface or a Symfony Request). More info: http://bit.ly/nosuperglobals';
+            return [
+                RuleErrorBuilder::message($message)
+                    ->line($node->getStartLine())
+                    ->file($scope->getFile())
+                    ->build(),
+            ];
         }
 
         return [];

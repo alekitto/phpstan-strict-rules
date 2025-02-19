@@ -5,10 +5,10 @@ namespace TheCodingMachine\PHPStan\Rules\Conditionals;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleError;
+use PHPStan\Rules\RuleErrorBuilder;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
 
 /**
@@ -24,15 +24,15 @@ class SwitchMustContainDefaultRule implements Rule
     }
 
     /**
-     * @param Switch_ $switch
+     * @param Switch_ $node
      * @param \PHPStan\Analyser\Scope $scope
-     * @return string[]
+     * @return RuleError[]
      */
-    public function processNode(Node $switch, Scope $scope): array
+    public function processNode(Node $node, Scope $scope): array
     {
         $errors = [];
         $defaultFound = false;
-        foreach ($switch->cases as $case) {
+        foreach ($node->cases as $case) {
             if ($case->cond === null) {
                 $defaultFound = true;
                 break;
@@ -40,7 +40,11 @@ class SwitchMustContainDefaultRule implements Rule
         }
 
         if (!$defaultFound) {
-            $errors[] = sprintf(PrefixGenerator::generatePrefix($scope).'switch statement does not have a "default" case. If your code is supposed to enter at least one "case" or another, consider adding a "default" case that throws an exception. More info: http://bit.ly/switchdefault');
+            $errors[] = RuleErrorBuilder::message(sprintf(PrefixGenerator::generatePrefix($scope).'switch statement does not have a "default" case.'))
+                ->file($scope->getFile())
+                ->line($node->getStartLine())
+                ->tip('If your code is supposed to enter at least one "case" or another, consider adding a "default" case that throws an exception. More info: http://bit.ly/switchdefault')
+                ->build();
         }
 
         return $errors;

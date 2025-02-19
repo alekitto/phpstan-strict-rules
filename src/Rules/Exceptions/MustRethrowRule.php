@@ -4,13 +4,14 @@
 namespace TheCodingMachine\PHPStan\Rules\Exceptions;
 
 use Exception;
+use PHPStan\Rules\RuleError;
+use PHPStan\Rules\RuleErrorBuilder;
 use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
-use PHPStan\Broker\Broker;
 use PHPStan\Rules\Rule;
 use RuntimeException;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
@@ -32,7 +33,7 @@ class MustRethrowRule implements Rule
     /**
      * @param Catch_ $node
      * @param \PHPStan\Analyser\Scope $scope
-     * @return string[]
+     * @return RuleError[]
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -58,7 +59,7 @@ class MustRethrowRule implements Rule
 
             public function leaveNode(Node $node)
             {
-                if ($node instanceof Node\Stmt\Throw_) {
+                if ($node instanceof Node\Stmt\Expression && $node->expr instanceof Node\Expr\Throw_) {
                     $this->throwFound = true;
                 }
                 return null;
@@ -82,7 +83,11 @@ class MustRethrowRule implements Rule
         $errors = [];
 
         if (!$visitor->isThrowFound()) {
-            $errors[] = sprintf('%scaught "%s" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud', PrefixGenerator::generatePrefix($scope), $exceptionType);
+            $message = sprintf('%scaught "%s" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud', PrefixGenerator::generatePrefix($scope), $exceptionType);
+            $errors[] = RuleErrorBuilder::message($message)
+                ->line($node->getStartLine())
+                ->file($scope->getFile())
+                ->build();
         }
 
         return $errors;

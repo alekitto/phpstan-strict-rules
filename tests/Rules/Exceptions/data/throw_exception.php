@@ -19,7 +19,8 @@ function bar()
 function baz()
 {
     try {
-        //...
+        // We need to do something or phpstan will skip the evaluation of the catch block
+        bar();
     } catch (\Exception $e) {
         // This is ok
         throw $e;

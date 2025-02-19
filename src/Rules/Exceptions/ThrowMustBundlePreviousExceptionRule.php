@@ -8,8 +8,9 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
-use PHPStan\Broker\Broker;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleError;
+use PHPStan\Rules\RuleErrorBuilder;
 
 /**
  * When throwing into a catch block, checks that the previous exception is passed to the new "throw" clause
@@ -27,10 +28,14 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
     /**
      * @param Catch_ $node
      * @param \PHPStan\Analyser\Scope $scope
-     * @return string[]
+     * @return RuleError[]
      */
     public function processNode(Node $node, Scope $scope): array
     {
+        if ($node->var === null) {
+            return [];
+        }
+
         $visitor = new class($node->var->name) extends NodeVisitorAbstract {
             /**
              * @var string
@@ -41,11 +46,11 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
              */
             private $exceptionUsedCount = 0;
             /**
-             * @var Node\Stmt\Throw_[]
+             * @var Node\Expr\Throw_[]
              */
             private $unusedThrows = [];
 
-            public function __construct(?string $catchedVariableName)
+            public function __construct(string $catchedVariableName)
             {
                 $this->catchedVariableName = $catchedVariableName;
             }
@@ -66,18 +71,14 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
                     }
                 }
 
-                if (PHP_VERSION_ID >= 80000 && is_null($this->catchedVariableName)) {
-                    $this->exceptionUsedCount--;
-                }
-
-                if ($node instanceof Node\Stmt\Throw_ && $this->exceptionUsedCount === 0) {
+                if ($node instanceof Node\Expr\Throw_ && $this->exceptionUsedCount === 0) {
                     $this->unusedThrows[] = $node;
                 }
                 return null;
             }
 
             /**
-             * @return Node\Stmt\Throw_[]
+             * @return Node\Expr\Throw_[]
              */
             public function getUnusedThrows(): array
             {
@@ -94,7 +95,11 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
         $errors = [];
 
         foreach ($visitor->getUnusedThrows() as $throw) {
-            $errors[] = sprintf('Thrown exceptions in a catch block must bundle the previous exception (see throw statement line %d). More info: http://bit.ly/bundleexception', $throw->getLine());
+            $message = sprintf('Thrown exceptions in a catch block must bundle the previous exception (see throw statement line %d). More info: http://bit.ly/bundleexception', $throw->getLine());
+            $errors[] = RuleErrorBuilder::message($message)
+                ->line($node->getStartLine())
+                ->file($scope->getFile())
+                ->build();
         }
 
         return $errors;
