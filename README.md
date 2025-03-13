@@ -1,11 +1,19 @@
-[![Latest Stable Version](https://poser.pugx.org/thecodingmachine/phpstan-strict-rules/v/stable)](https://packagist.org/packages/thecodingmachine/phpstan-strict-rules)
-[![Total Downloads](https://poser.pugx.org/thecodingmachine/phpstan-strict-rules/downloads)](https://packagist.org/packages/thecodingmachine/phpstan-strict-rules)
-[![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/phpstan-strict-rules/v/unstable)](https://packagist.org/packages/thecodingmachine/phpstan-strict-rules)
-[![License](https://poser.pugx.org/thecodingmachine/phpstan-strict-rules/license)](https://packagist.org/packages/thecodingmachine/phpstan-strict-rules)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/phpstan-strict-rules/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thecodingmachine/phpstan-strict-rules/?branch=master)
-[![Build Status](https://travis-ci.org/thecodingmachine/phpstan-strict-rules.svg?branch=master)](https://travis-ci.org/thecodingmachine/phpstan-strict-rules)
-[![Coverage Status](https://coveralls.io/repos/thecodingmachine/phpstan-strict-rules/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/phpstan-strict-rules?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/kcs/phpstan-strict-rules/v/stable)](https://packagist.org/packages/kcs/phpstan-strict-rules)
+[![Total Downloads](https://poser.pugx.org/kcs/phpstan-strict-rules/downloads)](https://packagist.org/packages/kcs/phpstan-strict-rules)
+[![Latest Unstable Version](https://poser.pugx.org/kcs/phpstan-strict-rules/v/unstable)](https://packagist.org/packages/kcs/phpstan-strict-rules)
+[![License](https://poser.pugx.org/kcs/phpstan-strict-rules/license)](https://packagist.org/packages/kcs/phpstan-strict-rules)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kcs/phpstan-strict-rules/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kcs/phpstan-strict-rules/?branch=master)
+[![Build Status](https://travis-ci.org/kcs/phpstan-strict-rules.svg?branch=master)](https://travis-ci.org/kcs/phpstan-strict-rules)
+[![Coverage Status](https://coveralls.io/repos/kcs/phpstan-strict-rules/badge.svg?branch=master&service=github)](https://coveralls.io/github/kcs/phpstan-strict-rules?branch=master)
 
+## This is a fork of the popular `thecodingmachine/phpstan-strict-rules`
+
+To push forward the development of this package and the adoption of phpstan v2, this package has been forked, as the original
+repository seems semi-abandoned.
+Versioning starts from 2.0 and retains all the features of the original package. Namespace has not been changed.
+
+Once the original project restarts, it is possible that this package would be abandoned. In case the original package is left
+abandoned for a longer time, this will be a hard fork, with different namespaces and so on...
 
 TheCodingMachine's additional rules for PHPStan
 ===============================================
