@@ -1,5 +1,5 @@
 {
-    "name": "thecodingmachine/phpstan-strict-rules",
+    "name": "kcs/phpstan-strict-rules",
     "description": "A set of additional rules for PHPStan based on best practices followed at TheCodingMachine",
     "type": "phpstan-extension",
     "license": "MIT",
@@ -7,15 +7,22 @@
         {
             "name": "David Négrier",
             "email": "d.negrier@thecodingmachine.com"
+        },
+        {
+            "name": "Alessandro Chitolina",
+            "email": "alekitto@gmail.com"
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^7.4 || ^8.0",
         "phpstan/phpstan": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "php-coveralls/php-coveralls": "^2.1"
+    },
+    "provide": {
+        "thecodingmachine/phpstan-strict-rules": "2.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,7 +42,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "2.0-dev"
         },
         "phpstan": {
             "includes": [
