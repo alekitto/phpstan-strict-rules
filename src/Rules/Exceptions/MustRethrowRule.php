@@ -1,21 +1,24 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TheCodingMachine\PHPStan\Rules\Exceptions;
 
 use Exception;
 use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
-use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\ShouldNotHappenException;
 use RuntimeException;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
 use Throwable;
+
+use function in_array;
 
 /**
  * When catching \Exception, \RuntimeException or \Throwable, the exception MUST be thrown again
@@ -32,8 +35,11 @@ class MustRethrowRule implements Rule
 
     /**
      * @param Catch_ $node
-     * @param \PHPStan\Analyser\Scope $scope
+     * @param Scope  $scope
+     *
      * @return RuleError[]
+     *
+     * @throws ShouldNotHappenException
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -55,7 +61,7 @@ class MustRethrowRule implements Rule
             /**
              * @var bool
              */
-            private $throwFound = false;
+            private bool $throwFound = false;
 
             public function leaveNode(Node $node)
             {
@@ -83,7 +89,7 @@ class MustRethrowRule implements Rule
         $errors = [];
 
         if (!$visitor->isThrowFound()) {
-            $message = sprintf('%scaught "%s" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud', PrefixGenerator::generatePrefix($scope), $exceptionType);
+            $message = sprintf('%scaught "%s" must be rethrown. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment.', PrefixGenerator::generatePrefix($scope), $exceptionType);
             $errors[] = RuleErrorBuilder::message($message)
                 ->line($node->getStartLine())
                 ->file($scope->getFile())

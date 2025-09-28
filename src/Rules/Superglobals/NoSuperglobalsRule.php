@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TheCodingMachine\PHPStan\Rules\Superglobals;
 
@@ -8,6 +9,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\ShouldNotHappenException;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
 
 /**
@@ -24,8 +26,10 @@ class NoSuperglobalsRule implements Rule
 
     /**
      * @param Node\Expr\Variable $node
-     * @param \PHPStan\Analyser\Scope $scope
+     * @param Scope              $scope
+     *
      * @return RuleError[]
+     * @throws ShouldNotHappenException
      */
     public function processNode(Node $node, Scope $scope): array
     {

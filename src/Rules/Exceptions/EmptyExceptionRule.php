@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TheCodingMachine\PHPStan\Rules\Exceptions;
 
@@ -9,6 +10,8 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\ShouldNotHappenException;
+
 use function strpos;
 
 /**
@@ -22,9 +25,11 @@ class EmptyExceptionRule implements Rule
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\Catch_ $node
-     * @param \PHPStan\Analyser\Scope $scope
+     * @param Catch_ $node
+     * @param Scope  $scope
+     *
      * @return RuleError[]
+     * @throws ShouldNotHappenException
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -50,11 +55,11 @@ class EmptyExceptionRule implements Rule
         foreach ($stmts as $stmt) {
             if (!$stmt instanceof Node\Stmt\Nop) {
                 return false;
-            } else {
-                foreach ($stmt->getComments() as $comment) {
-                    if (strpos($comment->getText(), '@ignoreException') !== false) {
-                        return false;
-                    }
+            }
+
+            foreach ($stmt->getComments() as $comment) {
+                if (strpos($comment->getText(), '@ignoreException') !== false) {
+                    return false;
                 }
             }
         }

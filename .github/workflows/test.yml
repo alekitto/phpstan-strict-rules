@@ -18,7 +18,7 @@ jobs:
 
         name: PHP ${{ matrix.php_version }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP with pecl extension
               uses: shivammathur/setup-php@v2

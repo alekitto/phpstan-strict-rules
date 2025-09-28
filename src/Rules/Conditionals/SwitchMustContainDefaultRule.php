@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace TheCodingMachine\PHPStan\Rules\Conditionals;
 
@@ -9,6 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\ShouldNotHappenException;
 use TheCodingMachine\PHPStan\Utils\PrefixGenerator;
 
 /**
@@ -25,8 +27,10 @@ class SwitchMustContainDefaultRule implements Rule
 
     /**
      * @param Switch_ $node
-     * @param \PHPStan\Analyser\Scope $scope
+     * @param Scope   $scope
+     *
      * @return RuleError[]
+     * @throws ShouldNotHappenException
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -40,7 +44,7 @@ class SwitchMustContainDefaultRule implements Rule
         }
 
         if (!$defaultFound) {
-            $errors[] = RuleErrorBuilder::message(sprintf(PrefixGenerator::generatePrefix($scope).'switch statement does not have a "default" case.'))
+            $errors[] = RuleErrorBuilder::message(PrefixGenerator::generatePrefix($scope).'switch statement does not have a "default" case.')
                 ->file($scope->getFile())
                 ->line($node->getStartLine())
                 ->tip('If your code is supposed to enter at least one "case" or another, consider adding a "default" case that throws an exception. More info: http://bit.ly/switchdefault')

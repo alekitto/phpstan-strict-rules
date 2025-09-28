@@ -17,15 +17,15 @@ class MustRethrowRuleTest extends RuleTestCase
     {
         $this->analyse([__DIR__ . '/data/must_rethrow.php'], [
             [
-                'caught "Exception" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud',
+                'caught "Exception" must be rethrown. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment.',
                 18,
             ],
             [
-                'caught "Throwable" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud',
+                'caught "Throwable" must be rethrown. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment.',
                 24,
             ],
             [
-                'In function "TestCatch\foo", caught "RuntimeException" must be rethrown. Either catch a more specific exception or add a "throw" clause in the "catch" block to propagate the exception. More info: http://bit.ly/failloud',
+                'In function "TestCatch\foo", caught "RuntimeException" must be rethrown. Either catch a more specific exception, add a "throw" clause in the "catch" block to propagate the exception or add a "// @ignoreException" comment.',
                 31,
             ],
         ]);
