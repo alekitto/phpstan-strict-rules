@@ -53,7 +53,8 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
                 $this->caughtVariableName = $caughtVariableName;
             }
 
-            public function leaveNode(Node $node): void
+            /** @inheritDoc */
+            public function leaveNode(Node $node)
             {
                 if ($node instanceof Node\Expr\Variable && $node->name === $this->caughtVariableName) {
                     $this->exceptionUsedCount++;
@@ -67,6 +68,8 @@ class ThrowMustBundlePreviousExceptionRule implements Rule
                 if ($node instanceof Node\Expr\Throw_ && $this->exceptionUsedCount === 0) {
                     $this->unusedThrows[] = $node;
                 }
+
+                return null;
             }
 
             /** @return Node\Expr\Throw_[] */

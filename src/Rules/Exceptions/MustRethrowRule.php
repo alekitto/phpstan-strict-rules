@@ -63,7 +63,8 @@ class MustRethrowRule implements Rule
              */
             private bool $throwFound = false;
 
-            public function leaveNode(Node $node): void
+            /** @inheritDoc */
+            public function leaveNode(Node $node)
             {
                 if ($node instanceof Node\Stmt\Expression && $node->expr instanceof Node\Expr\Throw_) {
                     $this->throwFound = true;
@@ -74,6 +75,8 @@ class MustRethrowRule implements Rule
                         $this->throwFound = true;
                     }
                 }
+
+                return null;
             }
 
             /**
