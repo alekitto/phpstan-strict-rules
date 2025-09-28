@@ -63,12 +63,17 @@ class MustRethrowRule implements Rule
              */
             private bool $throwFound = false;
 
-            public function leaveNode(Node $node)
+            public function leaveNode(Node $node): void
             {
                 if ($node instanceof Node\Stmt\Expression && $node->expr instanceof Node\Expr\Throw_) {
                     $this->throwFound = true;
                 }
-                return null;
+
+                foreach ($node->getComments() as $comment) {
+                    if (strpos($comment->getText(), '@ignoreException') !== false) {
+                        $this->throwFound = true;
+                    }
+                }
             }
 
             /**
